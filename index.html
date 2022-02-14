@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle ayuda</title>
+</head>
+
+<body>
+
+    <script type="text/javascript" src="diccionario.js"></script>
+
+    <script>
+        let palabrasPosibles = [];
+
+        /**
+         * Devuelve las palabras que no contienen las letras especificadas.
+         * palabras: Array de palabras a filtrar
+         * letras:   Letra que no deben aparecer en las palabras filtradas
+        */
+        function filtrarLetraNoValidas(palabras, letras) {
+            return palabras.filter(palabra => {
+                return !letras.some(letra => palabra.includes(letra));
+            });
+        }
+
+
+        /**
+         * Devuelve las palabras que contienen la letra especificada pero no en la posición indicada.
+         * palabras: Array de palabras a filtrar
+         * letra:    Letra que se busca
+         * posicion: Posición en la que no debe aparecer la letra
+        */
+        function filtrarLetraValidas(palabras, letra, posicion = undefined) {
+            return palabras.filter(palabra => palabra.includes(letra) && ((posicion == undefined) || ((posicion != undefined) && palabra[posicion-1] != letra)) );
+        }
+
+        /**
+         * Devuelve las palabras que contienen la letra en la posición especificada.
+         * palabras: Array de palabras a filtrar
+         * letra:    Letra que se busca
+         * posicion: Posición de la letra que se busca
+        */
+        function filtrarLetraPorPosicion(palabras, letra, posicion) {
+            return palabras.filter(palabra => palabra[posicion-1] == letra );
+        }
+
+        // ----- -----
+
+        palabrasPosibles = filtrarLetraNoValidas(DICCIONARIO, "pl".split(""));
+
+        palabrasPosibles = filtrarLetraPorPosicion(palabrasPosibles, "o", 2);
+
+        palabrasPosibles = filtrarLetraValidas(palabrasPosibles, "t", 1);
+
+
+        console.log("Hay " + palabrasPosibles.length + " resultados.");
+        palabrasPosibles.forEach(palabra => {
+            console.log(palabra);
+        });
+        console.log("Hay " + palabrasPosibles.length + " resultados.");
+
+    </script>
+
+</body>
+
+</html>
