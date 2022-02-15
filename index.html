@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-success">
         <div class="container">
             <a class="navbar-brand" href="#">Wordle ayuda</a>
         </div>
@@ -19,44 +19,65 @@
     
     <main class="container">
         <div class="row">
-            <div class="col-12 col-md-6 my-3">
-                <form>
-                    <div class="form-group">
-                        <label for="invalidLetters">Letras no válidas</label>
-                        <input id="invalidLetters" type="text" class="form-control text-uppercase" placeholder="ABC..."
-                            onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()">
-                        <small class="form-text text-muted">Letras que no están en la palabra (color gris).</small>
+            <div class="col-12 col-md-10 mx-auto">
+                <div class="row">
+                    <div class="col-12 col-md-6 my-3">
+                        <div class="card">
+                            <div class="card-header">
+                                Buscar palabras
+                              </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="invalidLetters">Letras no válidas (color gris)</label>
+                                        <input id="invalidLetters" type="text" class="form-control text-uppercase" placeholder="ABC..."
+                                            onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()">
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label for="validLetters">Letras válidas (color amarillo)</label>
+                                        <input id="validLetters" type="text" class="form-control text-uppercase" placeholder="DEF..."
+                                            onkeydown="return /[A-Za-z\d]/i.test(event.key)" onkeyup="alEscribir()">
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                      <label for="validLetters">Letras conocidas</label>
+                                      <table class="mx-auto">
+                                          <tr>
+                                            <td><input id="knownLetter1" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter2" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter3" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter4" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter5" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                          </tr>
+                                      </table>
+                                    </div>
+                                  </form>
+                            </div>
+        
+                            <div class="card-footer">
+                                <button type="button" id="btnBuscarPalabras" disabled class="btn btn-primary btn-block">Buscar palabras</button>
+                              </div>
+                          </div>
                     </div>
-                    <br>
-                    <div class="form-group">
-                        <label for="validLetters">Letras válidas</label>
-                        <input id="validLetters" type="text" class="form-control text-uppercase" placeholder="DEF..."
-                            onkeydown="return /[A-Za-z\d]/i.test(event.key)" onkeyup="alEscribir()">
-                        <small class="form-text text-muted">Letras que sí están en la palabra (color amarillo).</small>
+        
+                    <div class="col-12 col-md-6 my-3">
+                        <div class="card">
+                            <div class="card-header">
+                                Resultados de la búsqueda
+                            </div>
+                            <div class="card-body pre-scrollable">
+                                <ul id="lstResultados" class="list-group">
+                                </ul>
+                            </div>
+        
+                            <div class="card-footer">
+                                <span id=msgResultados></span>
+                            </div>
+                        </div>
+        
                     </div>
-                    <br>
-                    <div class="form-group">
-                      <label for="validLetters">Letras conocidas</label>
-                      <table class="mx-auto">
-                          <tr>
-                            <td><input id="knownLetter1" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                            <td><input id="knownLetter2" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                            <td><input id="knownLetter3" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                            <td><input id="knownLetter4" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                            <td><input id="knownLetter5" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                          </tr>
-                      </table>
-                      <small class="form-text text-muted">Letras conocidas y su ubicación en la palabra (color verde).</small>
-                    </div>
-                    <br>
-                    <button type="button" id="btnBuscarPalabras" disabled class="btn btn-primary btn-block">Buscar palabras</button>
-                  </form>
-
-            </div>
-            <div class="col-12 col-md-6 my-3">
-                <span id=msgResultados></span>
-                <ul id="lstResultados" class="list-group pre-scrollable">
-                  </ul>
+                </div>
             </div>
         </div>
     </main>
@@ -104,14 +125,17 @@
 
             if (palabras.length > 0) {
                 $("#" + msgResultados).html("Se encontraron <b>" + palabras.length + "</b> resultados")
+
+                palabras.forEach(palabra => {
+                    let listElem = '<li class="list-group-item text-uppercase">' + palabra + '</li>'
+                    $("#" + lstResultados).append(listElem);
+                });
             } else {
                 $("#" + msgResultados).html("No se encontraron resultados")
+                $("#" + lstResultados).append('Sin resultados');
             }
 
-            palabras.forEach(palabra => {
-                let listElem = '<li class="list-group-item text-uppercase">' + palabra + '</li>'
-                $("#" + lstResultados).append(listElem);
-            });
+            
         }
 
         document.getElementById(btnBuscar).addEventListener("click", function(event) {
