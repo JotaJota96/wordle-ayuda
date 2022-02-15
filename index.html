@@ -24,14 +24,14 @@
                     <div class="form-group">
                         <label for="invalidLetters">Letras no válidas</label>
                         <input id="invalidLetters" type="text" class="form-control text-uppercase" placeholder="ABC..."
-                            onkeydown="return /[A-Za-z]/i.test(event.key)">
+                            onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()">
                         <small class="form-text text-muted">Letras que no están en la palabra (color gris).</small>
                     </div>
                     <br>
                     <div class="form-group">
                         <label for="validLetters">Letras válidas</label>
                         <input id="validLetters" type="text" class="form-control text-uppercase" placeholder="DEF..."
-                            onkeydown="return /[A-Za-z]/i.test(event.key)">
+                            onkeydown="return /[A-Za-z\d]/i.test(event.key)" onkeyup="alEscribir()">
                         <small class="form-text text-muted">Letras que sí están en la palabra (color amarillo).</small>
                     </div>
                     <br>
@@ -39,26 +39,23 @@
                       <label for="validLetters">Letras conocidas</label>
                       <table class="mx-auto">
                           <tr>
-                            <td><input id="knownLetter1" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)"></td>
-                            <td><input id="knownLetter2" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)"></td>
-                            <td><input id="knownLetter3" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)"></td>
-                            <td><input id="knownLetter4" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)"></td>
-                            <td><input id="knownLetter5" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)"></td>
+                            <td><input id="knownLetter1" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                            <td><input id="knownLetter2" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                            <td><input id="knownLetter3" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                            <td><input id="knownLetter4" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                            <td><input id="knownLetter5" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
                           </tr>
                       </table>
                       <small class="form-text text-muted">Letras conocidas y su ubicación en la palabra (color verde).</small>
                     </div>
                     <br>
-                    <button type="submit" class="btn btn-primary btn-block">Buscar palabras</button>
+                    <button type="button" id="btnBuscarPalabras" disabled class="btn btn-primary btn-block">Buscar palabras</button>
                   </form>
 
             </div>
             <div class="col-12 col-md-6 my-3">
-                <ul class="list-group pre-scrollable">
-                    <li class="list-group-item">LITIO</li>
-                    <li class="list-group-item">NOVIO</li>
-                    <li class="list-group-item">CORTO</li>
-                    <li class="list-group-item">TORTA</li>
+                <span id=msgResultados></span>
+                <ul id="lstResultados" class="list-group pre-scrollable">
                   </ul>
             </div>
         </div>
@@ -68,58 +65,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script type="text/javascript" src="diccionario.js"></script>
+    <script type="text/javascript" src="filtrado.js"></script>
 
     <script>
+        const btnBuscar = "btnBuscarPalabras";
+        const lstResultados = "lstResultados";
+        const msgResultados = "msgResultados";
+        const txtInvalidLetters = "invalidLetters";
+        const txtValidLetters = "validLetters";
+        const txtKnownLetter = "knownLetter";
 
-        let palabrasPosibles = [];
+        function alEscribir() {
+            let btnEnabled = false;
 
-        /**
-         * Devuelve las palabras que no contienen las letras especificadas.
-         * palabras: Array de palabras a filtrar
-         * letras:   Letra que no deben aparecer en las palabras filtradas
-        */
-        function filtrarLetraNoValidas(palabras, letras) {
-            return palabras.filter(palabra => {
-                return !letras.some(letra => palabra.includes(letra));
+            btnEnabled = btnEnabled || $("#" + txtInvalidLetters).val().toLowerCase() != "";
+            btnEnabled = btnEnabled || /^(\D\d|\D)+$/g.test($("#" + txtValidLetters).val().toLowerCase());
+            
+            for (let index = 0; index < 5; index++) {
+                btnEnabled = btnEnabled || $("#" + txtKnownLetter + (index+1)).val().toLowerCase() != "";
+            }
+
+            if (btnEnabled) {
+                $("#" + btnBuscar).prop('disabled', false);
+
+            } else {
+                $("#" + btnBuscar).prop('disabled', true);
+
+            }
+        }
+
+        function cursorWait(wait) {
+            document.body.style.cursor = wait ? "wait" : "auto";
+            $("#" + btnBuscar).prop('disabled', wait);
+        }
+
+        function cargarPalabrasEnLaLista(palabras) {
+            $("#" + lstResultados).html("");
+
+            if (palabras.length > 0) {
+                $("#" + msgResultados).html("Se encontraron <b>" + palabras.length + "</b> resultados")
+            } else {
+                $("#" + msgResultados).html("No se encontraron resultados")
+            }
+
+            palabras.forEach(palabra => {
+                let listElem = '<li class="list-group-item text-uppercase">' + palabra + '</li>'
+                $("#" + lstResultados).append(listElem);
             });
         }
 
+        document.getElementById(btnBuscar).addEventListener("click", function(event) {
+            cursorWait(true);
 
-        /**
-         * Devuelve las palabras que contienen la letra especificada pero no en la posición indicada.
-         * palabras: Array de palabras a filtrar
-         * letra:    Letra que se busca
-         * posicion: Posición en la que no debe aparecer la letra
-        */
-        function filtrarLetraValidas(palabras, letra, posicion = undefined) {
-            return palabras.filter(palabra => palabra.includes(letra) && ((posicion == undefined) || ((posicion != undefined) && palabra[posicion-1] != letra)) );
-        }
+            let palabrasPosibles = DICCIONARIO;
 
-        /**
-         * Devuelve las palabras que contienen la letra en la posición especificada.
-         * palabras: Array de palabras a filtrar
-         * letra:    Letra que se busca
-         * posicion: Posición de la letra que se busca
-        */
-        function filtrarLetraPorPosicion(palabras, letra, posicion) {
-            return palabras.filter(palabra => palabra[posicion-1] == letra );
-        }
+            // filtro letras que no deben estar en la palabra
+            let invalidLetters = $("#" + txtInvalidLetters).val().toLowerCase();
+            palabrasPosibles = filtrarLetraNoValidas(DICCIONARIO, invalidLetters.split(""));
 
-        // ----- -----
+            // filtro letras que deben estar en la palabra
+            let validLetters = $("#" + txtValidLetters).val().toLowerCase();
+            let validLettersArray = validLetters.match(/(\D\d|\D)/g);
+            if (validLettersArray) {
+                validLettersArray.forEach((letra) => {
+                    if (letra.length == 1) {
+                        palabrasPosibles = filtrarLetraValidas(palabrasPosibles, letra);
+                    } else if (letra.length == 2) {
+                        palabrasPosibles = filtrarLetraValidas(palabrasPosibles, letra[0], letra[1]);
+                    }
+                })
+            }
 
-        palabrasPosibles = filtrarLetraNoValidas(DICCIONARIO, "pl".split(""));
+            // filtro letras con posición conocida
+            for (let index = 0; index < 5; index++) {
+                let letra = $("#" + txtKnownLetter + (index+1)).val().toLowerCase();
+                if (letra == undefined || letra == "") {
+                    continue;
+                } else {
+                    palabrasPosibles = filtrarLetraConocidaPorPosicion(palabrasPosibles, letra, index+1);
+                }
+            }
 
-        palabrasPosibles = filtrarLetraPorPosicion(palabrasPosibles, "o", 2);
-
-        palabrasPosibles = filtrarLetraValidas(palabrasPosibles, "t", 1);
-
-
-        console.log("Hay " + palabrasPosibles.length + " resultados.");
-        palabrasPosibles.forEach(palabra => {
-            console.log(palabra);
+            setTimeout(() => {
+                cargarPalabrasEnLaLista(palabrasPosibles)
+                cursorWait(false);
+                document.getElementById(lstResultados).scrollIntoView();
+            });
         });
-        console.log("Hay " + palabrasPosibles.length + " resultados.");
 
+        $(document).ready(function() {
+            alEscribir();
+        });
     </script>
 
 </body>
