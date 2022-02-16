@@ -1,9 +1,20 @@
 html {
 	scroll-behavior: smooth;
-} 
+}
+
+footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+nav {
+	background-color: #006b25;
+}
 
 body {
-	background-color: #beddc9;
+	background-color: #5bb67b;
 }
 
 .text-uppercase {
