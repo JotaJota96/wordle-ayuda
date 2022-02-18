@@ -40,24 +40,24 @@
                                     <div class="form-group">
                                         <label for="invalidLetters">Letras no válidas (color gris)</label>
                                         <input id="invalidLetters" type="text" class="form-control text-uppercase" placeholder="ABC..."
-                                            onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()">
+                                            onkeydown="return /[A-Za-zÑñ]/i.test(event.key)" onkeyup="alEscribir()">
                                     </div>
                                     <br>
                                     <div class="form-group">
                                         <label for="validLetters">Letras válidas (color amarillo)</label>
                                         <input id="validLetters" type="text" class="form-control text-uppercase" placeholder="DEF..."
-                                            onkeydown="return /[A-Za-z\d]/i.test(event.key)" onkeyup="alEscribir()">
+                                            onkeydown="return /[A-Za-zÑñ\d]/i.test(event.key)" onkeyup="alEscribir()">
                                     </div>
                                     <br>
                                     <div class="form-group">
                                       <label for="validLetters">Letras conocidas</label>
                                       <table class="mx-auto">
                                           <tr>
-                                            <td><input id="knownLetter1" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                                            <td><input id="knownLetter2" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                                            <td><input id="knownLetter3" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                                            <td><input id="knownLetter4" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
-                                            <td><input id="knownLetter5" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-z]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter1" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-zÑñ]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter2" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-zÑñ]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter3" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-zÑñ]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter4" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-zÑñ]/i.test(event.key)" onkeyup="alEscribir()"></td>
+                                            <td><input id="knownLetter5" type="text" class="form-control text-center p-1 text-uppercase" style="width: 35px;" maxlength="1" onkeydown="return /[A-Za-zÑñ]/i.test(event.key)" onkeyup="alEscribir()"></td>
                                           </tr>
                                       </table>
                                     </div>
