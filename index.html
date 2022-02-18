@@ -141,16 +141,18 @@
             $("#" + btnBuscar).prop('disabled', wait);
         }
 
-        function cargarPalabrasEnLaLista(palabras) {
+        function cargarPalabrasEnLaLista(gruposPalabras) {
             $("#" + lstResultados).html("");
 
-            if (palabras.length > 0) {
-                $("#" + msgResultados).html("Se encontraron <b>" + palabras.length + "</b> resultados")
-
-                palabras.forEach(palabra => {
-                    let listElem = '<li class="list-group-item text-uppercase">' + palabra + '</li>'
+            if (gruposPalabras.length > 0) {
+                let contador = 0;
+                gruposPalabras.forEach(palabrasSimilares => {
+                    contador += palabrasSimilares.length;
+                    let listElem = '<li class="list-group-item text-uppercase">' + palabrasSimilares.toString().replaceAll(",", ", ") + '</li>'
                     $("#" + lstResultados).append(listElem);
                 });
+
+                $("#" + msgResultados).html("Se encontraron <b>" + gruposPalabras.length + "</b> posibilidades. (" + contador + " palabras)")
             } else {
                 $("#" + msgResultados).html("No se encontraron resultados")
                 $("#" + lstResultados).append('Sin resultados');
@@ -190,9 +192,11 @@
                     palabrasPosibles = filtrarLetraConocidaPorPosicion(palabrasPosibles, letra, index+1);
                 }
             }
+            
+            palabrasAgrupadas = agruparSimilares(palabrasPosibles);
 
             setTimeout(() => {
-                cargarPalabrasEnLaLista(palabrasPosibles)
+                cargarPalabrasEnLaLista(palabrasAgrupadas)
                 cursorWait(false);
                 document.getElementById(lstResultados).scrollIntoView();
             });

@@ -45,3 +45,24 @@ function filtrarLetraValidas(palabras, letra, posicion = undefined) {
 function filtrarLetraConocidaPorPosicion(palabras, letra, posicion) {
     return palabras.filter(palabra => quitarTildes(palabra)[posicion-1] == letra );
 }
+
+function agruparSimilares(palabras) {
+    let resObj = {};
+    // agrupo palabras que en ocaciones usan tildes
+    palabras.forEach(palabra => {
+        let key = quitarTildes(palabra);
+        let entry = resObj[key];
+        if (entry == undefined) {
+            resObj[key] = [palabra];
+        } else {
+            entry.push(palabra);
+        }
+    });
+
+    let resArr = [];
+    for (key in resObj) {
+        resArr.push(resObj[key]);
+    }
+    return resArr;
+}
+// arr.toString().replaceAll(",", ", ")
