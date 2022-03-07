@@ -66,6 +66,11 @@
         
                             <div class="card-footer">
                                 <button type="button" id="btnBuscarPalabras" disabled class="btn btn-primary btn-block">Buscar palabras</button>
+                                
+                                <div id="divErrores" class="alert alert-danger mt-3" role="alert" hidden>
+                                    <ul id="lstErrores" class="list-group">
+                                    </ul>
+                                </div>
                               </div>
                           </div>
                     </div>
@@ -112,11 +117,13 @@
     <script>
         const btnBuscar = "btnBuscarPalabras";
         const lstResultados = "lstResultados";
+        const lstErrores = "lstErrores";
+        const divErrores = "divErrores";
         const msgResultados = "msgResultados";
         const txtInvalidLetters = "invalidLetters";
         const txtValidLetters = "validLetters";
         const txtKnownLetter = "knownLetter";
-
+        
         var DICCIONARIO_KEYS = Object.keys(DICCIONARIO);
 
         function alEscribir() {
@@ -163,18 +170,72 @@
             
         }
 
+        function mostrarErrores(errorMessages) {
+            $("#" + lstErrores).html("");
+            $("#" + divErrores).prop('hidden', errorMessages.length == 0);
+            errorMessages.forEach(errorMsg => {
+                let listElem = '<li>' + errorMsg + '</li>'
+                $("#" + lstErrores).append(listElem);
+            });
+        }
+
+        function checkFilterCoherence(invalidLettersArray, validLettersArray, knownLettersArray) {
+            let errorMessages = [];
+            invalidLettersArray = invalidLettersArray == undefined ? [] : invalidLettersArray;
+            validLettersArray = validLettersArray == undefined ? [] : validLettersArray;
+
+            invalidLettersArray.forEach(il => {
+                validLettersArray.forEach(vl => {
+                    if (il == vl[0]) {
+                        errorMessages.push("La letra '" + il.toUpperCase() + "' está en las letras válidas y en las no válidas.");
+                    }
+               })
+               knownLettersArray.forEach(kl => {
+                    if (il == kl) {
+                        errorMessages.push("La letra '" + il.toUpperCase() + "' está en las letras conocidas y en las no válidas.");
+                    }
+               })
+            })
+
+            validLettersArray.forEach(vl => {
+                if (vl.length > 1) {
+                    if (knownLettersArray[vl[1] - 1] == vl[0]) {
+                        errorMessages.push("La letra '" + vl[0].toUpperCase() + "' no puede estar y no estar en la posición " + vl[1] + ".");
+                    }
+                }
+            })
+
+            return errorMessages;
+        }
+
         document.getElementById(btnBuscar).addEventListener("click", function(event) {
             cursorWait(true);
+
+            let invalidLettersArray = $("#" + txtInvalidLetters).val().toLowerCase().split("");
+            let validLettersArray = $("#" + txtValidLetters).val().toLowerCase().match(/(\D\d|\D)/g);
+            let knownLettersArray = ["", "", "", "", ""];
+            for (let index = 0; index < 5; index++) {
+                let letra = $("#" + txtKnownLetter + (index+1)).val().toLowerCase();
+                if (letra != undefined && letra != "") {
+                    knownLettersArray[index] = letra;
+                }
+            }
+
+            // revision de errores
+            let errorMessages = checkFilterCoherence(invalidLettersArray, validLettersArray, knownLettersArray);
+            mostrarErrores(errorMessages);
+            if (errorMessages.length > 0) {
+                cargarPalabrasEnLaLista([])
+                cursorWait(false);
+                return;
+            }
 
             let palabrasPosibles = DICCIONARIO_KEYS;
 
             // filtro letras que no deben estar en la palabra
-            let invalidLetters = $("#" + txtInvalidLetters).val().toLowerCase();
-            palabrasPosibles = filtrarLetraNoValidas(palabrasPosibles, invalidLetters.split(""));
+            palabrasPosibles = filtrarLetraNoValidas(palabrasPosibles, invalidLettersArray);
 
             // filtro letras que deben estar en la palabra
-            let validLetters = $("#" + txtValidLetters).val().toLowerCase();
-            let validLettersArray = validLetters.match(/(\D\d|\D)/g);
             if (validLettersArray) {
                 validLettersArray.forEach((letra) => {
                     if (letra.length == 1) {
@@ -187,11 +248,8 @@
 
             // filtro letras con posición conocida
             for (let index = 0; index < 5; index++) {
-                let letra = $("#" + txtKnownLetter + (index+1)).val().toLowerCase();
-                if (letra == undefined || letra == "") {
-                    continue;
-                } else {
-                    palabrasPosibles = filtrarLetraConocidaPorPosicion(palabrasPosibles, letra, index+1);
+                if (knownLettersArray[index] != undefined && knownLettersArray[index] != "") {
+                    palabrasPosibles = filtrarLetraConocidaPorPosicion(palabrasPosibles, knownLettersArray[index], index+1);
                 }
             }
             
