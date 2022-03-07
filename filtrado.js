@@ -1,17 +1,3 @@
-
-/**
- * Quita los tildes de la palabra parámetro
-*/
-function quitarTildes(palabra) {
-    palabra = palabra.replace("á", "a");
-    palabra = palabra.replace("é", "e");
-    palabra = palabra.replace("í", "i");
-    palabra = palabra.replace("ó", "o");
-    palabra = palabra.replace("ú", "u");
-    palabra = palabra.replace("ü", "u");
-    return palabra;
-}
-
 /**
  * Devuelve las palabras que no contienen las letras especificadas.
  * palabras: Array de palabras a filtrar
@@ -19,7 +5,7 @@ function quitarTildes(palabra) {
 */
 function filtrarLetraNoValidas(palabras, letras) {
     return palabras.filter(palabra => {
-        return !letras.some(letra => quitarTildes(palabra).includes(letra));
+        return !letras.some(letra => palabra.includes(letra));
     });
 }
 
@@ -31,7 +17,6 @@ function filtrarLetraNoValidas(palabras, letras) {
 */
 function filtrarLetraValidas(palabras, letra, posicion = undefined) {
     return palabras.filter(palabra => {
-        palabra = quitarTildes(palabra);
         return palabra.includes(letra) && ((posicion == undefined) || ((posicion != undefined) && palabra[posicion-1] != letra)) 
    } );
 }
@@ -43,26 +28,5 @@ function filtrarLetraValidas(palabras, letra, posicion = undefined) {
  * posicion: Posición de la letra que se busca
 */
 function filtrarLetraConocidaPorPosicion(palabras, letra, posicion) {
-    return palabras.filter(palabra => quitarTildes(palabra)[posicion-1] == letra );
+    return palabras.filter(palabra => palabra[posicion-1] == letra );
 }
-
-function agruparSimilares(palabras) {
-    let resObj = {};
-    // agrupo palabras que en ocaciones usan tildes
-    palabras.forEach(palabra => {
-        let key = quitarTildes(palabra);
-        let entry = resObj[key];
-        if (entry == undefined) {
-            resObj[key] = [palabra];
-        } else {
-            entry.push(palabra);
-        }
-    });
-
-    let resArr = [];
-    for (key in resObj) {
-        resArr.push(resObj[key]);
-    }
-    return resArr;
-}
-// arr.toString().replaceAll(",", ", ")

@@ -117,6 +117,8 @@
         const txtValidLetters = "validLetters";
         const txtKnownLetter = "knownLetter";
 
+        var DICCIONARIO_KEYS = Object.keys(DICCIONARIO);
+
         function alEscribir() {
             let btnEnabled = false;
 
@@ -164,11 +166,11 @@
         document.getElementById(btnBuscar).addEventListener("click", function(event) {
             cursorWait(true);
 
-            let palabrasPosibles = DICCIONARIO;
+            let palabrasPosibles = DICCIONARIO_KEYS;
 
             // filtro letras que no deben estar en la palabra
             let invalidLetters = $("#" + txtInvalidLetters).val().toLowerCase();
-            palabrasPosibles = filtrarLetraNoValidas(DICCIONARIO, invalidLetters.split(""));
+            palabrasPosibles = filtrarLetraNoValidas(palabrasPosibles, invalidLetters.split(""));
 
             // filtro letras que deben estar en la palabra
             let validLetters = $("#" + txtValidLetters).val().toLowerCase();
@@ -193,7 +195,10 @@
                 }
             }
             
-            palabrasAgrupadas = agruparSimilares(palabrasPosibles);
+            let palabrasAgrupadas = [];
+            palabrasPosibles.forEach(key => {
+                palabrasAgrupadas.push(DICCIONARIO[key]);
+            })
 
             setTimeout(() => {
                 cargarPalabrasEnLaLista(palabrasAgrupadas)
